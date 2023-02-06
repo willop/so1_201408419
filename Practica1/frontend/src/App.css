@@ -1,0 +1,99 @@
+#cuerpo{
+    width: 100%;
+    align-items: baseline;
+    display: inline-block;
+}
+
+.arreglobotones{
+    height: 60%;
+    margin-top: 3%;
+    margin-bottom: 3%;
+}
+
+button{
+    font-size: 1.5em;
+    width: 22%;
+    height: 100px;
+    margin-right: 1.5%;
+    margin-left: 1.5%;
+}
+
+#calculadora{
+    border-radius: 30px;
+    border: #6b6c6d 10px solid;
+    width: 24%;
+    background-color:#122028;
+}
+
+#pantalla{
+    margin-top: 60px;
+    height: 200px;
+}
+
+input{
+    width: 93%;
+    border: none;
+}
+
+#operacion{
+    margin-left: -7%;
+    text-align: right;
+    height: 60px;
+    background-color: transparent;
+    font-size:1.5em; 
+    color: #3d5d5e;
+}
+
+#resultado{
+    margin-left: -7%;
+    font-size: 3.5em;
+    text-align: right;
+    height: 50px;
+    background-color: transparent;
+    color: #5ef3e7;
+}
+
+.tiponum{
+    background-color: transparent;
+    color:#cccfd4;
+    border: none;
+    border-radius: 50%;
+}
+
+.tipoop{
+    background-color:#1a5868;
+    border: none;
+    border-radius: 50%;
+    color:#5ef3e7;
+}
+#vacio{
+    height: 50px;
+}
+
+.tiponum:hover{
+    background-color: #1d3341;
+    color:#fff;
+}
+
+.tipoop:hover{
+    background-color: #1e6779;
+    color:#fff;
+}
+
+.tiponum:active{
+    background-color: #3d6b88;
+}
+
+.tipoop:active{
+    background-color: #29879e;
+    color:#fff;
+}
+
+#notch{
+    background-color: #6b6c6d;
+    height: 30px;
+    margin-top:-9px;
+    width: 200px;
+    border-radius: 20px;
+    
+}
