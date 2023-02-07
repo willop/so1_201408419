@@ -1,60 +1,62 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './App.css'
 
 export default function App() {
   const [procedimiento, setprocedimiento] = useState(' ');
   const [resultado, setresultado] = useState(' ');
-  const [bandera, setBandera]= useState(true);
-  const [operacion,setOperacion] = useState({
-    numero1: '',
+  const [bandera, setBandera] = useState(true);
+  const [operacion, setOperacion] = useState({
+    Numero1: 0,
     Operador: '',
-    numero2: ''
+    Numero2: 0
   })
 
 
-  // Almacenamiento de numeros
-  const handlechange = (evnt) =>{
-    bandera ? 
-    (operacion.numero1+=evnt.target.value)
-    :
-    (operacion.numero2+=evnt.target.value)
-    setprocedimiento(operacion.numero1+' '+operacion.Operador +' '+ operacion.numero2)
-    console.log(operacion);
-  } 
+  // Almacenamiento de Numeros
+  const handlechange = (evnt) => {
+    bandera ?
+      (operacion.Numero1 = parseInt(operacion.Numero1 + evnt.target.value))
+      :
+      (operacion.Numero2 = parseInt(operacion.Numero2 + evnt.target.value))
+    setprocedimiento(operacion.Numero1 + ' ' + operacion.Operador + ' ' + operacion.Numero2)
+  }
 
   //almacenamiento de operaciones
-  const handleoperacion = (evnt) =>{
+  const handleoperacion = (evnt) => {
     setBandera(false)
-    operacion.Operador=evnt.target.value;
-    setprocedimiento(operacion.numero1+' '+operacion.Operador +' '+ operacion.numero2)
-    console.log(operacion);
-  } 
+    operacion.Operador = evnt.target.value;
+    setprocedimiento(operacion.Numero1 + ' ' + operacion.Operador + ' ' + operacion.Numero2)
+  }
 
   //limpiar calculadora
-  const limpiar = () =>{
+  const limpiar = () => {
     setBandera(true);
-    operacion.numero1 = '';
-    operacion.numero2 = '';
+    operacion.Numero1 = 0;
+    operacion.Numero2 = 0;
     operacion.Operador = '';
-    setprocedimiento(operacion.numero1+' '+operacion.Operador +' '+ operacion.numero2)
-    console.log(operacion);
+    setresultado(' ');
+    setprocedimiento(' ');
   }
 
   //Realizar operacion
-  const RealizarOperacion = async()=>{
+  const RealizarOperacion = async () => {
     try {
       let configuration = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(operacion),        
+        body: JSON.stringify(operacion),
       }
-      let respuesta = await fetch('',configuration)
+      let respuesta = await fetch('http://localhost:4000/resolver', configuration)
       let json = await respuesta.json();
-      console.log(json);
+      setresultado(json.resultado)
+      operacion.Numero1 = 0;
+      operacion.Numero2 = 0;
+      operacion.Operador = '';
+      setBandera(true)
     } catch (error) {
-      
+      console.log(error);
     }
   }
 
@@ -68,7 +70,7 @@ export default function App() {
           <div id="pantalla">
             <input type="text" id="resultado" readOnly value={resultado}></input>
             <input type="text" id="operacion" readOnly value={procedimiento}></input>
-            
+
           </div>
           <div id="cuerpo">
             <div className='arreglobotones'>
