@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	/*
 		"encoding/json"
@@ -42,6 +43,20 @@ type Returnn struct {
 type Resultado struct {
 	Resultado string `json:"resultado"`
 }
+
+//return de logs
+type Log struct {
+	Id        string `json:"Id"`
+	Numero1   int    `json:"Numero1"`
+	Numero2   int    `json:"Numero2"`
+	Operador  string `json:"Operador"`
+	Resultado string `json:"Resultado"`
+	Fecha     string `json:"Fecha"`
+}
+
+//env.Load("./config.env")
+//env.Load("config.env")
+//env.Load("./config.env")
 
 func getDB() (*sql.DB, error) {
 	var _ = godotenv.Load(".env")
@@ -82,6 +97,11 @@ func main() {
 }
 
 func SetData(w http.ResponseWriter, r *http.Request) {
+	//enableCors(&w)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Content-Type", "application/json")
+
 	var info Returnn
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(reqBody, &info)
@@ -97,7 +117,7 @@ func SetData(w http.ResponseWriter, r *http.Request) {
 	case "-":
 		num = strconv.Itoa(info.Numero1 - info.Numero2)
 		break
-	case "*":
+	case "X":
 		num = strconv.Itoa(info.Numero1 * info.Numero2)
 		break
 	case "/":
@@ -109,6 +129,24 @@ func SetData(w http.ResponseWriter, r *http.Request) {
 		break
 	}
 
+	t := time.Now()
+	fecha := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d",
+		t.Year(), t.Month(), t.Day(),
+		t.Hour(), t.Minute(), t.Second())
+
+	db, err := getDB()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
+	insert, err := db.Query("INSERT INTO Datos(numero1,numero2,operador,resultado,fecha) VALUES (?,?,?,?,?)", info.Numero1, info.Numero2, info.Operador, num, fecha)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer insert.Close()
+	fmt.Println("Valores insertados")
+
 	result := Resultado{
 		Resultado: num,
 	}
@@ -119,5 +157,28 @@ func GetData(w http.ResponseWriter, r *http.Request) {
 	// display the documents retrieved
 	fmt.Println("displaying all results in a collection")
 
-	//json.NewEncoder(w).Encode(rest)
+	db, err := getDB()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
+	results, err := db.Query("select * from Datos")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer results.Close()
+	var log Log
+	var logs []Log
+
+	for results.Next() {
+		err = results.Scan(&log.Id, &log.Numero1, &log.Numero2, &log.Operador, &log.Resultado, &log.Fecha)
+		if err != nil {
+			panic(err.Error())
+		}
+		logs = append(logs, log)
+	}
+	json.NewEncoder(w).Encode(logs)
+
 }

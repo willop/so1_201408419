@@ -12,20 +12,23 @@
 
 button{
     font-size: 1.5em;
-    width: 22%;
-    height: 100px;
+    width: 20%;
+    height: 80px;
     margin-right: 1.5%;
     margin-left: 1.5%;
 }
 
 #calculadora{
+    margin-left: 20%;
     border-radius: 30px;
     border: #6b6c6d 10px solid;
-    width: 24%;
+    width: 360px;
+    height: 740px;
     background-color:#122028;
 }
 
 #pantalla{
+    position: relative;
     margin-top: 60px;
     height: 200px;
 }
@@ -66,6 +69,35 @@ input{
     border-radius: 50%;
     color:#5ef3e7;
 }
+
+.tipolog{
+    background-color:#0e3038;
+    color:#47b8ae;
+    margin-top: 5%;
+    width: 200px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+}
+
+.tipolog:hover{
+    background-color:#185461;
+}
+
+.tipolog2{
+    background-color:#38210e;
+    color:#e2a24e;
+    margin-top: 5%;
+    width: 200px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+}
+
+.tipolog2:hover{
+    background-color:#9b501e;
+}
+
 #vacio{
     height: 50px;
 }
@@ -93,7 +125,37 @@ input{
     background-color: #6b6c6d;
     height: 30px;
     margin-top:-9px;
-    width: 200px;
+    width: 150px;
     border-radius: 20px;
-    
+}
+
+#cuerpohtml{
+    display:flex;
+}
+
+#logs{
+    margin-left: 5%;
+}
+
+
+table{
+    table-layout: fixed;
+    width: 900px;
+    border-collapse: collapse;
+    background-color: whitesmoke;
+    border-radius: 5px;
+}
+
+th, td {
+    border: 1px solid rgb(189, 189, 189);
+    padding: 5px;
+  }
+
+thead th {
+    width: 25%;
+    background-color: orange;
+}
+
+tr:hover {
+    background-color: rgb(199, 199, 199);
 }
