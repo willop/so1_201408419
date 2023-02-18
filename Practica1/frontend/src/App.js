@@ -69,7 +69,7 @@ export default function App() {
         },
         body: JSON.stringify(operacion),
       }
-      let respuesta = await fetch('http://localhost:4000/resolver', configuration)
+      let respuesta = await fetch('http://'+ process.env.REACT_APP_API_URL +':4000/resolver', configuration)
       let json = await respuesta.json();
       setresultado(json.resultado)
       operacion.Numero1 = 0;
@@ -81,25 +81,48 @@ export default function App() {
     }
   }
 
-    //Realizar operacion
-    const ViewLogs = async () => {
-      try {
-        let configuration = {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
+  //Realizar operacion
+  const ViewLogs = async () => {
+    try {
+      let configuration = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
         }
-        let respuesta = await fetch('http://localhost:4000/logs', configuration)
-        let json = await respuesta.json();
-        console.log("Resultado logs")
-        console.log(json)
-        setLogs(json)
-        setCambio(!cambio) 
-      } catch (error) {
-        console.log(error);
       }
+      let respuesta = await fetch('http://'+ process.env.REACT_APP_API_URL +':4000/logs', configuration)
+      let json = await respuesta.json();
+      console.log("Resultado logs")
+      console.log(json)
+      setLogs(json)
+      setCambio(!cambio)
+    } catch (error) {
+      console.log(error);
     }
+  }
+
+
+  //generar reporte 
+  const Generar_reporte = () => {
+    try {
+      const a = document.createElement("a");
+      var contenido = "";
+      for (var x of logs) {
+        contenido += x.Id +";"+x.Numero1+";"+x.Numero2+";%"+x.Operador+"%;"+x.Resultado+";"+x.Fecha+"\n";
+      }
+      const archivo = new Blob([contenido], { type: 'text/plain' });
+      const url = URL.createObjectURL(archivo);
+      a.href = url;
+      a.download = "script";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+
+    }
+  }
+
+  //Realizar operacion
+
 
   return (
     <div id="App">
@@ -141,7 +164,7 @@ export default function App() {
                 {cambio ? (
                   <button className='tipolog' onClick={ViewLogs}>View logs</button>
                 ) : (
-                  <button className='tipolog2' onClick={() => {setCambio(!cambio)}}>Hide logs</button>
+                  <button className='tipolog2' onClick={() => { setCambio(!cambio) }}>Hide logs</button>
                 )
                 }
               </div>
@@ -151,11 +174,17 @@ export default function App() {
         <div id="logs">
           {
             cambio ? (
-              <h2>Info de Docker</h2>
-            ) : (
               <div>
-                <h2>Table</h2>
-                <table striped bordered hover>
+                <h2>Docker</h2>
+                <p>Docker empaqueta software en “contenedores” que incluyen en ellos todo lo necesario para que dicho software se ejecute, incluidas librerías. Con Docker se puede implementar y ajustar la escala de aplicaciones de una forma rápida en cualquier entorno con la garantía de que el código se ejecutará.
+                  A primera vista se piensa en Docker como una especie de máquina virtual “liviana”, pero la verdad no lo es. En Docker no existe un hypervisor que virtualice hardware sobre el cual corra un sistema operativo completo. En Docker lo que se hace es usar las funcionalidades del Kernel para encapsular un sistema, de esta forma el proyecto que corre dentro de el no tendrá conocimiento que está en un contenedor. Los contenedores se encuentran aislados entre sí y se comportaran como máquinas independientes.
+                  Iniciar un contenedor no tiene un gran impacto a diferencia de iniciar una máquina virtual ya que no tiene que iniciar un sistema operativo completo (desde cero). Gracias al uso de contenedores la demanda de recursos baja limitándose sólo al consumo de la aplicación que contenga. Un contenedor inicia en milisegundos.</p>
+              </div>
+
+            ) : (
+              <div >
+                <h2>Logs</h2>
+                <table>
                   <thead>
                     <tr>
                       <th>#</th>
@@ -182,6 +211,11 @@ export default function App() {
                     }
                   </tbody>
                 </table>
+                <br />
+                <br />
+                <center>
+                  <button id="Reporte" onClick={Generar_reporte}>Gererar reporte</button>
+                </center>
               </div>
             )
           }

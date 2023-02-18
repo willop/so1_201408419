@@ -135,15 +135,20 @@ input{
 
 #logs{
     margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 10px;
+    width: 60%;
 }
 
 
 table{
     table-layout: fixed;
     width: 900px;
+    height: 200px;
     border-collapse: collapse;
     background-color: whitesmoke;
     border-radius: 5px;
+    overflow-y:auto;
 }
 
 th, td {
@@ -158,4 +163,13 @@ thead th {
 
 tr:hover {
     background-color: rgb(199, 199, 199);
+}
+
+#Reporte{
+    height: 45px;
+    background-color: #2b8686;
+}
+
+#Reporte:hover{
+    background-color: #1a5252;
 }

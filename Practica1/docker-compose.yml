@@ -1,0 +1,53 @@
+version: "3.3"
+services:
+
+  bash:
+    container_name: "p1_bash"
+    image: willop/p1_bash_201408419
+    command: tail -F anything
+    networks:
+      - practicasopes1
+
+  backend: 
+    container_name: "backend"
+    image: willop/p1_backend_201408419:latest
+    depends_on:
+      - db
+    ports:
+      - 4000:4000
+    environment:
+      - user=sopes
+      - pass=root
+      - host=db
+      - port=3306
+      - db_name=Sopes
+    networks:
+      - practicasopes1    
+  
+  front: 
+    container_name: "frontend"
+    image: willop/p1_frontend_201408419:latest
+    depends_on:
+      - backend
+      - db
+    ports:
+      - 3000:3000
+    environment:
+      - REACT_APP_API_URL=localhost
+    networks:
+      - practicasopes1
+  
+  db: 
+    container_name: "p1_db"
+    image: mysql
+    restart: always
+    volumes:
+      - /home/willop/Documentos/data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - practicasopes1 
+
+networks:
+  practicasopes1:
+    driver: bridge
