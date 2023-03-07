@@ -1,43 +1,79 @@
 #include <linux/module.h>
-#include <linux/init.h>
+// para usar KERN_INFO
 #include <linux/kernel.h>
-#include <linux/fs.h>
+
+//Header para los macros module_init y module_exit
+#include <linux/init.h>
+//Header necesario porque se usara proc_fs
 #include <linux/proc_fs.h>
-#include <linux/seq_file.h>
+/* for copy_from_user */
 #include <asm/uaccess.h>
+/* Header para usar la lib seq_file y manejar el archivo en /proc*/
+#include <linux/seq_file.h>
 
-#define PROCFS_NAME "procesox"
+#include <linux/hugetlb.h>
 
-static int OS2_show(struct seq_file *m, void *v){
-seq_printf(m, "Hola mundo\n");
-return 0;
+#include <linux/sysinfo.h>
+#include <linux/seq_file.h>
+#include <linux/swap.h>
+
+MODULE_DESCRIPTION("Creacion de modulo, Laboratorio Sistemas Operativos 1");
+MODULE_AUTHOR("Wilfred Stewart Perez Solorzano");
+
+//Funcion que se ejecutara que se lea el archivo con el comando CAT
+static int escribir_archivo(struct seq_file *archivo, void *v)
+{
+    // usando las funciones de sysinfo
+    struct sysinfo libsys_info;
+    unsigned long totalram;
+    unsigned long freeram;
+    unsigned long disponible;
+    unsigned long resta;
+    unsigned long multiplicacion;
+    unsigned long usoram;
+    si_meminfo(&libsys_info);
+
+    totalram = libsys_info.totalram*(unsigned long long)libsys_info.mem_unit / 1024;
+    freeram = libsys_info.freeram *(unsigned long long)libsys_info.mem_unit / 1024;
+    disponible = si_mem_available() *(unsigned long long)libsys_info.mem_unit / 1024;
+
+    resta = totalram - freeram;
+    multiplicacion = resta * 100;
+
+    usoram = multiplicacion/totalram;
+    seq_printf(archivo, "{\n\"RAM\": %ld,\n \"FREE\": %ld ,\n \"USADA\":%ld\n}", totalram,freeram,usoram);
+    return 0;
 }
 
-static int OS2_open(struct inode *inode, struct file *file){
-return single_open(file, OS2_show, NULL);
+//Funcion que se ejecutara cada vez que se lea el archivo con el comando CAT
+static int al_abrir(struct inode *inode, struct file *file)
+{
+    return single_open(file, escribir_archivo, NULL);
 }
 
-static const struct proc_ops OS2_fops = {
-//.owner = THIS_MODULE,
-.proc_open = OS2_open,
-.proc_read = seq_read
-//.llseek = seq_lseek,
-//.release = single_release,
+//Si el kernel es 5.6 o mayor se usa la estructura proc_ops
+static struct proc_ops operaciones =
+{
+    .proc_open = al_abrir,
+    .proc_read = seq_read
 };
 
-static int __init OS2_init(void){
-printk(KERN_INFO "Cargando modulo.\r\n");
-proc_create(PROCFS_NAME, 0, NULL, &OS2_fops);
-printk(KERN_INFO "Completado. Procceso: /proc/%s.\r\n", PROCFS_NAME);
-return 0;
+//Funcion a ejecuta al insertar el modulo en el kernel con insmod
+static int _insert(void)
+{
+    proc_create("ram_201408419", 0, NULL, &operaciones);
+    printk(KERN_INFO "201408419\n"); //imprimiendo carnet al usar insmod
+    return 0;
 }
 
-static void __exit OS2_exit(void){
-remove_proc_entry(PROCFS_NAME, NULL);
-printk(KERN_INFO "Modulo deshabilitado.\r\n");
+//Funcion a ejecuta al remover el modulo del kernel con rmmod
+static void _remove(void)
+{
+    remove_proc_entry("ram_201408419", NULL);
+    printk(KERN_INFO "Sistemas operativos\n");  //Imprimiendo el nombre del curso al usar rmmod
 }
 
-module_init(OS2_init);
-module_exit(OS2_exit);
+module_init(_insert);
+module_exit(_remove);
 
 MODULE_LICENSE("GPL");
