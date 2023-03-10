@@ -1,7 +1,7 @@
 #include <linux/module.h>	/* Nesesario para todos los modulos */
 #include <linux/kernel.h>	/* Nesesario para informacion del kernel */
 
-#include <linux/init.h>		/* Nesesario para macros */
+#include <linux/init.h>		/* Necesario para macros */
 #include <linux/proc_fs.h>
 #include <asm/uaccess.h>
 #include <linux/seq_file.h>
@@ -26,8 +26,7 @@ static int escribir_archivo(struct seq_file *archivo, void *v)
 
     bool aux = true;
     bool aux2 = true;
-    seq_printf(archivo,"%s",cpu);
-    seq_printf(archivo, "\n\n\n\n{\n\"Procesos\":[\n");
+    seq_printf(archivo, "{\n\"Procesos\":[\n");
     for_each_process(cpu){
         if(aux){
             seq_printf(archivo, "\n");
@@ -39,9 +38,14 @@ static int escribir_archivo(struct seq_file *archivo, void *v)
         seq_printf(archivo, "{\n");
         seq_printf(archivo, "\"idp\":\"%d\",\n", cpu->pid);                                 //para id
         seq_printf(archivo, "\"nproceso\":\"%s\",\n", cpu->comm);                           //para nombre
-        //seq_printf(archivo, "\"statep\":\"%d\",\n", cpu->__state);                            //para estado
-        //seq_printf(archivo, "\"ramp\":\"%lu\",\n", rss);                                     //para ram
-        //seq_printf(archivo, "\"userp\":\"%d\",\n", __kuid_val(cpu->cred->uid));           //para Usuario
+        seq_printf(archivo, "\"statep\":\"%d\",\n", cpu->__state);                          //para estado
+        //seq_printf(archivo, "\"ramp\":\"%lu\",\n", get_mm_rss(cpu->mm));//(cpu->acct_vm_mem1);         //para ram
+        if(cpu->mm) {
+            seq_printf(archivo, "\"ramp\":\"%lu\",\n", (get_mm_rss(cpu->mm)<<PAGE_SHIFT)/(1024*1024));
+        }else{
+            seq_printf(archivo, "\"ramp\":\"0\",\n");
+        }
+        seq_printf(archivo, "\"userp\":\"%d\",\n", __kuid_val(cpu->cred->uid));             //para Usuario
         seq_printf(archivo, "\"hijos\":[\n");
         aux2=true;
         list_for_each(listProcesos, &(cpu->children)){
