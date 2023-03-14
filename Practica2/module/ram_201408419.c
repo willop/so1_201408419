@@ -17,8 +17,11 @@
 #include <linux/seq_file.h>
 #include <linux/swap.h>
 
+
 MODULE_DESCRIPTION("Creacion de modulo, Laboratorio Sistemas Operativos 1");
 MODULE_AUTHOR("Wilfred Stewart Perez Solorzano");
+
+//struct cpu_id_t data;  
 
 //Funcion que se ejecutara que se lea el archivo con el comando CAT
 static int escribir_archivo(struct seq_file *archivo, void *v)
@@ -41,7 +44,22 @@ static int escribir_archivo(struct seq_file *archivo, void *v)
     multiplicacion = resta * 100;
 
     usoram = multiplicacion/totalram;
-    seq_printf(archivo, "{\n\"RAM\": %ld,\n \"FREE\": %ld ,\n \"USADA\":%ld\n}", totalram,freeram,usoram);
+
+    unsigned int eax=11,ebx=0,ecx=1,edx=0;
+    unsigned int cores =1 ,threads =1;
+
+asm volatile("cpuid"
+        : "=a" (eax),
+          "=b" (ebx),
+          "=c" (ecx),
+          "=d" (edx)
+        : "0" (eax), "2" (ecx)
+        : );
+
+    //printf("Cores: %d\nThreads: %d\nActual thread: %d\n",eax,ebx,edx);
+    //printf("Processor model is `%s'\n", data.cpu_codename);
+    seq_printf(archivo, "{\n\"RAM\": %ld,\n \"FREE\": %ld ,\n \"USADA\":%ld\n \"Cores\": %d,\n \"Threads\": %d,\n \"Actual_thread\": %d\n}", totalram,freeram,usoram,eax,ebx,edx);
+    //seq_printf(archivo, "{\n\"RAM\": %ld,\n \"FREE\": %ld ,\n \"USADA\":%ld,\n \"CPUNAME\":%s}", totalram,freeram,usoram, data.cpu_codename);
     return 0;
 }
 

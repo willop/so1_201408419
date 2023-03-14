@@ -1,5 +1,3 @@
-//Para go.mod go mod init main.go
-//Para go.sum go tity
 package main
 
 import (

@@ -1,2 +1,27 @@
 ------------------FRONTEND----------------
 npx create-react-app frontend
+//progress bar
+npm install --save react-circular-progressbar
+
+
+------------------Backend GO --------------
+
+Para go.mod 
+-   go mod init main.go
+Para go.sum 
+-   go tity
+
+------------------ Flujo de la aplicacion --------------
+Crear los archivos de cpu y ram
+```
+    make all
+```
+
+para cargar los modulos a los procesos de la maquina anfitrion
+- sudo insmod cpu_201408419.ko
+- sudo insmod ram_201408419.ko
+
+Ejecutar el backend de go
+- go run main.go
+        ### Recordar que tiene un .env ###
+
