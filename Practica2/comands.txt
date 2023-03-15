@@ -2,6 +2,7 @@
 npx create-react-app frontend
 //progress bar
 npm install --save react-circular-progressbar
+npm install dotenv --save
 
 
 ------------------Backend GO --------------
@@ -10,6 +11,16 @@ Para go.mod
 -   go mod init main.go
 Para go.sum 
 -   go tity
+
+
+--------------- Server Node js------------------
+npm init -y
+npm install -D nodemon
+npm i express
+npm i cors
+npm install dotenv --save
+npm install mysql
+npm install router
 
 ------------------ Flujo de la aplicacion --------------
 Crear los archivos de cpu y ram
@@ -24,4 +35,6 @@ para cargar los modulos a los procesos de la maquina anfitrion
 Ejecutar el backend de go
 - go run main.go
         ### Recordar que tiene un .env ###
+
+
 

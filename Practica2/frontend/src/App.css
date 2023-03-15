@@ -2,7 +2,7 @@ body{
     background-color: rgb(34,37,75);
 }
 
-h1,h3,h4{
+h1,h2,h3,h4{
     color:whitesmoke
 }
 
@@ -19,8 +19,8 @@ h1,h3,h4{
 }
 
 #Procesos{
-    width: 80%;
-    margin-left: 10%;
+    width: 90%;
+    margin-left: 5%;
     display: flex;
 }
 
@@ -31,4 +31,7 @@ h1,h3,h4{
     border-radius: 10px;
 }
 
-
+#Process_child_space{
+    margin-left: 5%;
+    width: 80%;
+}

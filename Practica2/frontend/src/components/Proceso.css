@@ -44,7 +44,7 @@
     animation: giraricono infinite 2s;
     animation-timing-function: linear;
     border-radius: 50%;
-    height: 30px;
+    height: 36px;
 }
 @keyframes giraricono {
     from{

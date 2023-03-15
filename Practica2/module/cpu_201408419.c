@@ -60,12 +60,12 @@ static int escribir_archivo(struct seq_file *archivo, void *v)
             seq_printf(archivo, "\"hid\":\"%d\",\n", hijos->pid);
             //seq_printf(archivo, "\"hid\":\"%d\",\n", );
             //seq_printf(archivo, " --------> ");
-            seq_printf(archivo, "\"hnombre\":\"%s\"\n", hijos->comm);
-            seq_printf(archivo, "\"hestado\":\"%d\"\n", hijos->__state);
+            seq_printf(archivo, "\"hnombre\":\"%s\",\n", hijos->comm);
+            seq_printf(archivo, "\"hestado\":\"%d\",\n", hijos->__state);
             if(hijos->mm) {
-                seq_printf(archivo, "\"hram\":\"%lu\",\n", (get_mm_rss(hijos->mm)<<PAGE_SHIFT)/(1024*1024));
+                seq_printf(archivo, "\"hram\":\"%lu\"\n", (get_mm_rss(hijos->mm)<<PAGE_SHIFT)/(1024*1024));
             }else{
-                seq_printf(archivo, "\"hram\":\"0\",\n");
+                seq_printf(archivo, "\"hram\":\"0\"\n");
             }
             seq_printf(archivo, "}");
         }
