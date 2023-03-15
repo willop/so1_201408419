@@ -1,14 +1,60 @@
-import React from 'react'
+import { React, useState, useEffect } from 'react'
 import './App.css'
-import {Col, Nav, Row, Tab} from 'react-bootstrap';
+import Process from './components/Proceso.jsx'
+import { getCPU, getRAM } from './api/getmodules';
+
+import { Col, Nav, Row, Tab } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Import react-circular-progressbar module and styles
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import Process from './components/Proceso.jsx'
+
 
 export default function App() {
+
+  const [info_cpu, setCPU] = useState([]);
+  const [info_ram, setRAM] = useState({
+    RAM: 16112712,
+    FREE: 2637416,
+    USADA: 83,
+    Cores: 7,
+    Threads: 24,
+    Actual_thread: 8
+  });
+  var usada = (info_ram.RAM - info_ram.FREE) / (1024 * 1024)
+  const fGetCPU = async () => {
+    try {
+      var query = await getCPU();
+      var result = await query.json();
+      console.log(result.Procesos)
+      setCPU(result.Procesos);
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const fGetRAM = async () => {
+    try {
+      var query = await getRAM();
+      var result = await query.json();
+      console.log(result)
+      setRAM(result);
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+
+  useEffect(function () {
+    console.log("Hola al iniciar la app")
+    setTimeout(fGetRAM, 10000)
+    setTimeout(fGetCPU, 1000000)
+  })
+
+
+
+
   return (
     <div>
       <div id='Encabezado'>
@@ -16,9 +62,10 @@ export default function App() {
       </div>
       <div id='Graficas'>
         <div id="Contenedor_grafica">
+          <center><h3>RAM</h3></center>
           <CircularProgressbar className='tam_grafica'
-            value={10}
-            text={`${10}%`}
+            value={info_ram.USADA}
+            text={`${info_ram.USADA}%`}
             circleRatio={0.75}
             styles={buildStyles({
               rotation: 1 / 2 + 1 / 8,
@@ -26,12 +73,17 @@ export default function App() {
               strokeLinecap: "butt",
               trailColor: "#eee" //fondo
             })} />
-          <center><h3>RAM</h3></center>
+          <center>
+            <h4>{usada.toFixed(2) + "Gb/" + (info_ram.RAM / (1024 * 1024)).toFixed(2) + "Gb"}</h4>
+            <h4>{"Libre: " + (info_ram.FREE / (1024 * 1024)).toFixed(2) + "Gb"}</h4>
+          </center>
         </div >
+
         <div id="Contenedor_grafica">
+          <center><h3>CPU</h3></center>
           <CircularProgressbar className='tam_grafica'
-            value={10}
-            text={`${10}%`}
+            value={((info_ram.Actual_thread/info_ram.Threads)*100).toFixed(1)}
+            text={`${((info_ram.Actual_thread/info_ram.Threads)*100).toFixed(1)}%`}
             circleRatio={0.75}
             styles={buildStyles({
               rotation: 1 / 2 + 1 / 8,
@@ -39,28 +91,65 @@ export default function App() {
               strokeLinecap: "butt",
               trailColor: "#eee" //fondo
             })} />
-          <center><h3>CPU</h3></center>
+            <center>
+            <h4>{"Cores: "+info_ram.Cores}</h4>
+            <h4>{"Total Threads: "+info_ram.Threads}</h4>
+          </center>
         </div >
       </div>
-
+      <br />
+      <br />
       <div id='Procesos'>
         <div id='P_execute' className='Tipe_process'>
           <center><h4>En ejecucion</h4></center>
           {//running, zombie, stoped, sleep
           }
-          <Process type="running" idp='1234' name='Proceso 1' ram='13' userp='0' />
-          <Process type="zombie" idp='6765' name='Proceso 2' ram='123' userp='1000' />
-          <Process type="stoped" idp='45' name='Proceso 3' ram='1453' userp='0' />
-          <Process type="sleep" idp='45' name='Proceso 3' ram='1453' userp='1000' />
+          {
+            info_cpu.map((process, index) => {
+              if (process.statep === "0") {
+                return (
+                  <Process type="running" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
+                )
+              }
+            })
+          }
+
         </div>
         <div id='P_zombie' className='Tipe_process'>
           <center><h4>Zombie</h4></center>
+          {
+            info_cpu.map((process, index) => {
+              if (process.statep === "4") {
+                return (
+                  <Process type="zombie" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
+                )
+              }
+            })
+          }
         </div>
         <div id='P_stoped' className='Tipe_process'>
           <center><h4>Detenido</h4></center>
+          {
+            info_cpu.map((process, index) => {
+              if (process.statep === "8") {
+                return (
+                  <Process type="stoped" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
+                )
+              }
+            })
+          }
         </div>
         <div id='P_sleep' className='Tipe_process'>
           <center><h4>Suspendido</h4></center>
+          {
+            info_cpu.map((process, index) => {
+              if (process.statep === "1" || process.statep === "1026") {
+                return (
+                  <Process type="sleep" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
+                )
+              }
+            })
+          }
         </div>
       </div>
       <br />
@@ -68,24 +157,65 @@ export default function App() {
       <br />
       <center><h1>Procesos hijo</h1></center>
       <div id='Procesos_hijo'>
-      <Tab.Container id="left-tabs-example" defaultActiveKey="first">
-      <Row>
-        <Col sm={3}>
-          <Nav variant="pills" className="flex-column">
-            <Nav.Item>
-              <Nav.Link eventKey="first">Tab 1</Nav.Link>
-            </Nav.Item>
-          </Nav>
-        </Col>
-        <Col sm={9}>
-          <Tab.Content>
-            <Tab.Pane eventKey="first">
-            
-            </Tab.Pane>
-          </Tab.Content>
-        </Col>
-      </Row>
-    </Tab.Container>
+        <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+          <Row>
+            <Col sm={3}>
+              <Nav variant="pills" className="flex-column">
+                {
+                  info_cpu.map((process, index) => {
+                    if (process.hijos != "") {
+                      return (
+                        <Nav.Item>
+                          <Nav.Link eventKey={process.nproceso + process.idp}>{process.nproceso + process.idp}</Nav.Link>
+                        </Nav.Item>
+                      )
+                    }
+                  })
+                }
+              </Nav>
+            </Col>
+            <Col sm={9}>
+              <Tab.Content>
+                {
+                  info_cpu.map((process, index) => {
+                    if (process.hijos !== "") {
+                      return (
+                        <Tab.Pane eventKey={process.nproceso + process.idp}>
+                          <div id='Process_child_space'>
+                            {process.hijos.map((hijos, indexx) => {
+                              switch (hijos.hestado) {
+                                case "1":
+                                  return (
+                                    <Process type="sleep" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
+                                  )
+                                case "1026":
+                                  return (
+                                    <hijos type="sleep" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
+                                  )
+                                case "0":
+                                  return (
+                                    <hijos type="running" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
+                                  )
+                                case "4":
+                                  return (
+                                    <hijos type="zombie" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
+                                  )
+                                case "8":
+                                  return (
+                                    <hijos type="stoped" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
+                                  )
+                              }
+                            })}
+                          </div>
+                        </Tab.Pane>
+                      )
+                    }
+                  })
+                }
+              </Tab.Content>
+            </Col>
+          </Row>
+        </Tab.Container>
 
 
       </div>

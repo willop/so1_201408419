@@ -58,7 +58,7 @@ asm volatile("cpuid"
 
     //printf("Cores: %d\nThreads: %d\nActual thread: %d\n",eax,ebx,edx);
     //printf("Processor model is `%s'\n", data.cpu_codename);
-    seq_printf(archivo, "{\n\"RAM\": %ld,\n \"FREE\": %ld ,\n \"USADA\":%ld\n \"Cores\": %d,\n \"Threads\": %d,\n \"Actual_thread\": %d\n}", totalram,freeram,usoram,eax,ebx,edx);
+    seq_printf(archivo, "{\n\"RAM\": %ld,\n \"FREE\": %ld ,\n \"USADA\":%ld,\n \"Cores\": %d,\n \"Threads\": %d,\n \"Actual_thread\": %d\n}", totalram,freeram,usoram,eax,ebx,edx);
     //seq_printf(archivo, "{\n\"RAM\": %ld,\n \"FREE\": %ld ,\n \"USADA\":%ld,\n \"CPUNAME\":%s}", totalram,freeram,usoram, data.cpu_codename);
     return 0;
 }
