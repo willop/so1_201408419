@@ -3,6 +3,7 @@ npx create-react-app frontend
 //progress bar
 npm install --save react-circular-progressbar
 npm install dotenv --save
+npm i axios
 
 
 ------------------Backend GO --------------

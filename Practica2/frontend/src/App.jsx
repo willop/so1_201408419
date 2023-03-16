@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react'
+import { React, useState, useEffect,useRef } from 'react'
 import './App.css'
 import Process from './components/Proceso.jsx'
 import { getCPU, getRAM } from './api/getmodules';
@@ -12,8 +12,9 @@ import "react-circular-progressbar/dist/styles.css";
 
 
 export default function App() {
-
+  const delay = 5;
   const [info_cpu, setCPU] = useState([]);
+  const timer = useRef(null);
   const [info_ram, setRAM] = useState({
     RAM: 16112712,
     FREE: 2637416,
@@ -27,7 +28,7 @@ export default function App() {
     try {
       var query = await getCPU();
       var result = await query.json();
-      console.log(result.Procesos)
+      //console.log(result.Procesos)
       setCPU(result.Procesos);
     } catch (e) {
       console.log(e)
@@ -38,19 +39,41 @@ export default function App() {
     try {
       var query = await getRAM();
       var result = await query.json();
-      console.log(result)
+      //console.log(result)
       setRAM(result);
     } catch (e) {
       console.log(e)
     }
   }
 
+  const fgetInfo = async ()=>{
+    try {
+      var query = await getRAM();
+      var result = await query.json();
+      setRAM(result);
 
-  useEffect(function () {
-    console.log("Hola al iniciar la app")
+      query = await getCPU();
+      result = await query.json();
+      setCPU(result.Procesos);
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+useEffect(()=>{
+  //let timer1 = setTimeout(() => , delay * 1000);
+  timer.current = setInterval(fgetInfo, delay * 1000);
+
+  return () => {
+    clearTimeout(timer.current);
+  };
+},[]);
+
+  /*useEffect(function () {
+    //fGetCPU();
     setTimeout(fGetRAM, 10000)
-    setTimeout(fGetCPU, 1000000)
-  })
+    //setTimeout(fGetCPU, 10000)
+  })*/
 
 
 
@@ -108,7 +131,7 @@ export default function App() {
             info_cpu.map((process, index) => {
               if (process.statep === "0") {
                 return (
-                  <Process type="running" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
+                  <Process key={process.idp} type="running" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
                 )
               }
             })
@@ -121,7 +144,7 @@ export default function App() {
             info_cpu.map((process, index) => {
               if (process.statep === "4") {
                 return (
-                  <Process type="zombie" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
+                  <Process key={process.idp} type="zombie" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
                 )
               }
             })
@@ -133,7 +156,7 @@ export default function App() {
             info_cpu.map((process, index) => {
               if (process.statep === "8") {
                 return (
-                  <Process type="stoped" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
+                  <Process key={process.idp} type="stoped" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
                 )
               }
             })
@@ -145,7 +168,7 @@ export default function App() {
             info_cpu.map((process, index) => {
               if (process.statep === "1" || process.statep === "1026") {
                 return (
-                  <Process type="sleep" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
+                  <Process key={process.idp} type="sleep" idp={process.idp} name={process.nproceso} ram={process.ramp} userp={process.userp} />
                 )
               }
             })
@@ -165,8 +188,8 @@ export default function App() {
                   info_cpu.map((process, index) => {
                     if (process.hijos != "") {
                       return (
-                        <Nav.Item>
-                          <Nav.Link eventKey={process.nproceso + process.idp}>{process.nproceso + process.idp}</Nav.Link>
+                        <Nav.Item key={process.idp}>
+                          <Nav.Link key={process.idp} eventKey={process.nproceso + process.idp}>{process.nproceso + process.idp}</Nav.Link>
                         </Nav.Item>
                       )
                     }
@@ -180,29 +203,29 @@ export default function App() {
                   info_cpu.map((process, index) => {
                     if (process.hijos !== "") {
                       return (
-                        <Tab.Pane eventKey={process.nproceso + process.idp}>
+                        <Tab.Pane key={index} eventKey={process.nproceso + process.idp}>
                           <div id='Process_child_space'>
                             {process.hijos.map((hijos, indexx) => {
                               switch (hijos.hestado) {
                                 case "1":
                                   return (
-                                    <Process type="sleep" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
+                                    <Process key={hijos.hid} type="sleep" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
                                   )
                                 case "1026":
                                   return (
-                                    <hijos type="sleep" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
+                                    <Process key={hijos.hid} type="sleep" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
                                   )
                                 case "0":
                                   return (
-                                    <hijos type="running" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
+                                    <Process key={hijos.hid} type="running" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
                                   )
                                 case "4":
                                   return (
-                                    <hijos type="zombie" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
+                                    <Process key={hijos.hid} type="zombie" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
                                   )
                                 case "8":
                                   return (
-                                    <hijos type="stoped" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
+                                    <Process key={hijos.hid} type="stoped" idp={hijos.hid} name={hijos.hnombre} ram={hijos.hram} userp={process.userp} />
                                   )
                               }
                             })}

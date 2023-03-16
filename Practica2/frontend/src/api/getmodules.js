@@ -1,4 +1,5 @@
 import { url_api } from "../config/RoutePath"
+import { usersApi } from "./userApi"
 
 const url_cpu   = url_api + 'system/cpu'
 const url_ram   = url_api + 'system/ram'
