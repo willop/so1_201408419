@@ -23,7 +23,7 @@ export default function App() {
     Threads: 24,
     Actual_thread: 8
   });
-  var usada = (info_ram.RAM - info_ram.FREE) / (1024 * 1024)
+  var usada = (info_ram.Utilizada) / (1024 * 1024)
   const fGetCPU = async () => {
     try {
       var query = await getCPU();
@@ -105,8 +105,8 @@ useEffect(()=>{
         <div id="Contenedor_grafica">
           <center><h3>CPU</h3></center>
           <CircularProgressbar className='tam_grafica'
-            value={((info_ram.Actual_thread/info_ram.Threads)*100).toFixed(1)}
-            text={`${((info_ram.Actual_thread/info_ram.Threads)*100).toFixed(1)}%`}
+            value={(info_ram.Actual_thread).toFixed(1)}
+            text={`${(info_ram.Actual_thread).toFixed(1)}%`}
             circleRatio={0.75}
             styles={buildStyles({
               rotation: 1 / 2 + 1 / 8,
