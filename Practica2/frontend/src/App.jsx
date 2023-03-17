@@ -24,27 +24,6 @@ export default function App() {
     Actual_thread: 8
   });
   var usada = (info_ram.Utilizada) / (1024 * 1024)
-  const fGetCPU = async () => {
-    try {
-      var query = await getCPU();
-      var result = await query.json();
-      //console.log(result.Procesos)
-      setCPU(result.Procesos);
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  const fGetRAM = async () => {
-    try {
-      var query = await getRAM();
-      var result = await query.json();
-      //console.log(result)
-      setRAM(result);
-    } catch (e) {
-      console.log(e)
-    }
-  }
 
   const fgetInfo = async ()=>{
     try {
@@ -83,6 +62,9 @@ useEffect(()=>{
       <div id='Encabezado'>
         <h1>Task Management</h1>
       </div>
+      <br/>
+      <br/>
+      <br/>
       <div id='Graficas'>
         <div id="Contenedor_grafica">
           <center><h3>RAM</h3></center>
@@ -180,7 +162,7 @@ useEffect(()=>{
       <br />
       <center><h1>Procesos hijo</h1></center>
       <div id='Procesos_hijo'>
-        <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+        <Tab.Container id="left-tabs-example" defaultActiveKey="systemd1">
           <Row>
             <Col sm={3}>
               <Nav variant="pills" className="flex-column">

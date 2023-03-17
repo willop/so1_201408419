@@ -39,3 +39,16 @@ Ejecutar el backend de go
 
 
 
+----------------------- Docker------------------------------
+Construir imagen de backen nodejs 
+sudo docker build -t willop/p2_backend_201408419:latest .
+sudo docker build -t willop/p2_frontend_201408419:latest .
+---- Docker-compose ---------------------------------
+sudo docker-compose build
+sudo docker-compose up
+sudo docker-compose down
+
+sudo docker build -t willop/p2_backendgo_201408419:latest .
+sudo docker run -e user=$user -e pass=$pass -e host=$host -e port=$port -e db_name=$db_name --name backendgo -it willop/p2_backendgo_201408419:funcional
+
+
