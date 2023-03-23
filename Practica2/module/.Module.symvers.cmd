@@ -1,1 +1,0 @@
-cmd_/home/willop/Documentos/Sopes1/Practica2/module/Module.symvers := sed 's/ko$$/o/' /home/willop/Documentos/Sopes1/Practica2/module/modules.order | scripts/mod/modpost -m -a  -o /home/willop/Documentos/Sopes1/Practica2/module/Module.symvers -e -i Module.symvers   -T -
