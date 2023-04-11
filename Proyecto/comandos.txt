@@ -1,0 +1,3 @@
+//-------------- FRONTEND --------------
+npm install react-bootstrap bootstrap
+npm install --save react-google-charts
