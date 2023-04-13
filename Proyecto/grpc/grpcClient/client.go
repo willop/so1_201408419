@@ -13,12 +13,12 @@ import (
 	pb "clientgrpc/proto-grpc"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv" //go get github.com/joho/godotenv
 	"google.golang.org/grpc"
 )
 
-const (
-	address = "localhost:50051"
-)
+var _ = godotenv.Load(".env")
+var address = os.Getenv("addresserver")
 
 func conectar_server(wri http.ResponseWriter, req *http.Request) {
 	// agregando cors

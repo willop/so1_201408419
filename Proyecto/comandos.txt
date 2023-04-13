@@ -6,7 +6,7 @@ npm install --save react-google-charts
 Ejecutar
 locust -f traffic.py
 
-//---------------- GRPC------------------
+//---------------- GRPC GO------------------
 go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 export PATH="$PATH:$(go env GOPATH)/bin"
@@ -32,3 +32,13 @@ Ejecutar
 go mod init clientgrpc
 go get github.com/gorilla/mux
 go get google.golang.org/grpc
+go get github.com/joho/godotenv
+
+//--------------------------GRPC Node------------------------
+npm install -D nodemon
+npm i express
+npm i cors
+npm install dotenv --save
+npm install mysql
+npm install router
+npm i body-parser

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package confproto;
+
+service getInfo{
+    rpc returnInfo(requestID) returns(replyInfo){}
+}
+
+message requestID {
+    int32 sede=1;
+    string departamento =2;
+    string municipio =3;
+    string paleta =4;
+    string partido =5;
+}
+
+message replyInfo{
+    string info=1;
+}
