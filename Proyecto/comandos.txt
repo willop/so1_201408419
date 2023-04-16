@@ -42,3 +42,21 @@ npm install dotenv --save
 npm install mysql
 npm install router
 npm i body-parser
+
+
+
+--------------------------------- Pub/Sub redis -----------------------
+-----Pub---------
+go mod init pubredis
+go get github.com/gofiber/fiber/v2
+go get github.com/go-redis/redis/v8
+
+------Sub --------
+go mod init subredis
+go get github.com/go-sql-driver/mysql
+go get github.com/joho/godotenv
+
+
+//---------------------------------- Socker.io --------------------
+npm install socket.io
+npm install express@4
