@@ -1,6 +1,8 @@
 //-------------- FRONTEND --------------
 npm install react-bootstrap bootstrap
 npm install --save react-google-charts
+npm i d3
+npm install react-icons --save
 
 //---------------LOCUST------------------
 Ejecutar

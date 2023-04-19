@@ -5,6 +5,10 @@ var io = require("socket.io")(server);
 
 app.use(express.static("public"));
 
+app.get("/hello", function (req, res) {
+    res.status(200).send("Hello World!");
+  });
+
 server.listen(5000, function () {
     console.log("Servidor corriendo en http://localhost:5000");
   });
