@@ -4,7 +4,7 @@ const packageDef = protoLoader.loadSync("configuracion.proto",{});
 const grpcObject = grpc.loadPackageDefinition(packageDef);
 const todoPackage = grpcObject.confproto;
 
-const client = new todoPackage.getInfo("localhost:40000", grpc.credentials.createInsecure())
+const client = new todoPackage.getInfo(process.env.SERVER_HOST+":40000", grpc.credentials.createInsecure())
 
 
 

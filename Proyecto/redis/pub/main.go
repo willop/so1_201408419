@@ -4,7 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
+	"os"
 	"strconv"
+
+	"github.com/joho/godotenv" //go get github.com/joho/godotenv
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
@@ -19,9 +23,10 @@ type User struct {
 }
 
 var ctx = context.Background()
+var _ = godotenv.Load(".env")
 
 var redisClient = redis.NewClient(&redis.Options{
-	Addr: "localhost:6379",
+	Addr: os.Getenv("host") + ":" + os.Getenv("port"),
 })
 
 func main() {

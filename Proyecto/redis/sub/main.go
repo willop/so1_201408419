@@ -65,8 +65,8 @@ func main() {
 
 		fmt.Println("Received message from " + msg.Channel + " channel.")
 
-		query := `INSERT INTO temporal(sede,Departamento,Municipio, Paleta, Partido) VALUES (?,?,?,?,?);`
-		result, err := conn.Exec(query, user.Sede, user.Departamento, user.Municipio, user.Paleta, user.Partido)
+		query := `INSERT INTO temporal(sede,Departamento,Municipio, Paleta, Partido,Fuente) VALUES (?,?,?,?,?,?);`
+		result, err := conn.Exec(query, user.Sede, user.Departamento, user.Municipio, user.Paleta, user.Partido, "Redis")
 
 		if err != nil {
 			fmt.Println("Error en insert temporal redis/sub")

@@ -3,6 +3,8 @@ npm install react-bootstrap bootstrap
 npm install --save react-google-charts
 npm i d3
 npm install react-icons --save
+npm i socket.io-client
+npm install chart.js react-chartjs-2
 
 //---------------LOCUST------------------
 Ejecutar
@@ -62,3 +64,21 @@ go get github.com/joho/godotenv
 //---------------------------------- Socker.io --------------------
 npm install socket.io
 npm install express@4
+
+//---------------------------------------API -----------------------
+npm install dotenv --save
+npm install mysql
+npm i redis
+npm install -g redis-commander
+--ejecutar "redis-commander"
+npm i dotenv
+
+
+//--------------------------------- DOCKER BUILD ----------------------
+## contruir imagenes de docker 
+sudo docker build -t willop/pf_frontend_201408419:latest .
+sudo docker build -t willop/pf_api_201408419:latest .
+sudo docker build -t willop/pf_grpc_client_201408419:latest .
+sudo docker build -t willop/pf_grpc_server_201408419:latest .
+sudo docker build -t willop/pf_redis_sub_201408419:latest .
+sudo docker build -t willop/pf_redis_pub_201408419:latest .

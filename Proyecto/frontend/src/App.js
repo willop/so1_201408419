@@ -1,42 +1,206 @@
-import { React, useState } from 'react'
+import { React, useState, useEffect } from 'react'
 import { Table, Dropdown, ListGroup } from 'react-bootstrap';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Chart } from "react-google-charts";
 import { FcBarChart } from "react-icons/fc";
+import {
+  Chart as ChartJS,
+  BarElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  ArcElement
+} from 'chart.js'
+import { Bar, Pie } from 'react-chartjs-2';
+
+
+
+//socket
+import io from "socket.io-client";
+var dir = process.env.REACT_APP_API_URL || "http://localhost" 
+const socket = io.connect(dir+":5000");
+
+ChartJS.register(
+  BarElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  ArcElement
+);
+
 
 export default function App() {
-  //data para graficas
-  const [dataGrafica, setDataGrafica] = useState(
-    [
-      ["Departamento", "Votos"],
-      ["Guatemala", 1500],
-      ["Suchitepequez", 180],
-      ["Quiche", 500]
-    ]
-  );
+  //Inicio
+  useEffect(() => {
+    function recibir_mensaje(message) {
+      //onsole.log(JSON.parse(message))
+      if (message != null) {
+        //console.log(JSON.parse(message))
+        setDataReporte1(JSON.parse(message))
+      }
 
-  const [options, setoptions] = useState({
-    chart: {
-      title: "Reporte de votos para presidente",
-      subtitle: "Votos del año 2023",
-    },
-    series: {
-      0: { color: 'rgb(220,53,69)' }
     }
-  });
+    function reporte2(message2) {
+      //console.log(JSON.parse(message2))
+      if(message2 != null) {
+      setDataGrafica(JSON.parse(message2))
+      }
+    }
+
+    function reporte3(message3) {
+      //console.log(JSON.parse(message3))
+      setDataGraficaR3(JSON.parse(message3))
+    }
+
+    function reporte4(message4) {
+      if (message4 != null) {
+        //console.log(JSON.parse(message4))
+        setDataGraficaR4(JSON.parse(message4))
+      }
+    }
+
+    function reporte5(message5) {
+      if (message5 != null) {
+        setDataGraficaR5(message5)
+
+      }
+    }
+
+    function fechaac(messa) {
+      if (messa != null) {
+        //console.log(messa)
+        setFechaActual(messa);
+        
+      }
+    }
+
+    socket.on("receive_message", recibir_mensaje);
+    socket.on("reporte2", reporte2);
+    socket.on("reporte3", reporte3);
+    socket.on("reporte4", reporte4);
+    socket.on("reporte5", reporte5);
+    socket.on("fecha", fechaac);
+    return () => {
+      socket.off("receive_message", recibir_mensaje);
+      socket.off("reporte2", reporte2);
+      socket.off("reporte3", reporte3);
+      socket.off("reporte4", reporte4);
+      socket.off("reporte5", reporte5);
+      socket.off("fecha", fechaac);
+    }
+  }, [socket]);
+
+
+
+  //data para graficas
+  //REPORTE 1
+  const [datareporte1, setDataReporte1] = useState([{"id":1,"Sede":44,"Departamento":"Peten","Municipio":"Las flores","Paleta":"Blanca","Partido":"VAMOS","Fuente":"MySQL"},{"id":2,"Sede":44,"Departamento":"Peten","Municipio":"Las flores","Paleta":"Blanca","Partido":"VAMOS","Fuente":"MySQL"}])
+  const [fechaactual, setFechaActual] = useState("");
+  const [dataGrafica, setDataGrafica] = useState([{ "Departamento": "Guatemela", "votos": 4 }, { "Departamento": "Guatemela", "votos": 4 }]);
+  const [dataGraficaR3, setDataGraficaR3] = useState([{ "Departamento": "Guatemela", "votos": 4 }, { "Departamento": "Guatemela", "votos": 4 }]);
+  const [dataGraficaR4, setDataGraficaR4] = useState([{ "Sede": 33, "votos": 41 }, { "Sede": 50, "votos": 4 }]);
+  const [dataGraficaR5, setDataGraficaR5] = useState([
+    { "sede": 7614, "departamento": "Izabal", "municipio": "Izabal", "paleta": "Blanca", "partido": "VAMOS" },
+    { "sede": 98, "departamento": "Izabal", "municipio": "Izabal", "paleta": "Blanca", "partido": "VAMOS" }
+  ]);
+
+
+  var datass = {
+    labels: dataGrafica.map(o => o.Departamento),
+    datasets: [
+      {
+        label: 'Cantidad de votos',
+        backgroundColor: 'rgba(0, 255, 0, 0.2)',
+        borderColor: 'rgb(0, 255, 0)',
+        borderWidth: 1,
+        data: dataGrafica.map(o => o.votos)
+      }
+    ]
+  }
+  var optionsss = {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Bar Chart'
+      }
+    }
+  }
+
+  var dataR4 = {
+    labels: dataGraficaR4.map(o => "Sede " + o.Sede),
+    datasets: [
+      {
+        label: "Votos",
+        backgroundColor: 'rgba(220,53,69,0.2)',
+        borderColor: 'rgb(220,53,69)',
+        borderWidth: 1,
+        data: dataGraficaR4.map(o => o.votos)
+      }
+    ]
+  }
+
+  var optionReporte4 = {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Bar Chart'
+      }
+    }
+  }
+
+  var optionsss = {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Bar Chart'
+      }
+    }
+  }
+
+  const datapie = {
+    labels: dataGraficaR3.map(o => o.Departamento),
+    datasets: [
+      {
+        label: '# de Votos',
+        data: dataGraficaR3.map(o => o.votos),
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
 
 
   return (
     <div>
       <div id="Encabezado">
-        <center><h1><FcBarChart/> ELECCIONES</h1></center>
+        <center><h1><FcBarChart /> ELECCIONES</h1></center>
       </div>
-
       <br />
       <br />
-
       <br />
+      <div>
+      <h3>Fecha: {fechaactual}</h3>
+      <br />
+      <br />
+      </div>
       <div id="FRow">
         <div id="Tabla">
           <br />
@@ -53,46 +217,21 @@ export default function App() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
+              {
+                datareporte1.map((Fila, index) => {
+                  return (
+                    <tr key={index} >
+                      <td>{Fila.id}</td>
+                      <td>{Fila.Sede}</td>
+                      <td>{Fila.Municipio}</td>
+                      <td>{Fila.Departamento}</td>
+                      <td>{Fila.Paleta}</td>
+                      <td>{Fila.Partido}</td>
+                    </tr>
+                  )
+                }
+                )
+              }
             </tbody>
           </Table>
         </div>
@@ -100,23 +239,8 @@ export default function App() {
           <br />
           <h3>Top 3 departamentos con mayores votos para presidentes, en MySQL.</h3>
           <center>
-            <Chart
-              chartType="Bar"
-              width="85%"
-              height="400px"
-              data={dataGrafica}
-              options={{
-                chart: {
-                  title: "Reporte de votos para presidente",
-                  subtitle: "Votos del año 2023",
-                },
-                series: {
-                  0: { color: 'rgb(13,110,253)' }
-                }
-              }}
-            />
+            <Bar data={datass} options={optionsss} />
           </center>
-
         </div>
       </div>
 
@@ -125,7 +249,7 @@ export default function App() {
         <br />
         <h3>Grafico circular del porcentaje de votos por partido segun municipio y departamento</h3>
         <Dropdown>
-          <Dropdown.Toggle variant="success" id="0">
+          <Dropdown.Toggle variant="success">
             Departamento
           </Dropdown.Toggle>
 
@@ -135,52 +259,49 @@ export default function App() {
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        <center><Chart
-          chartArea={{ backgroundColor: 'red' }}
-          chartType="PieChart"
-          width="80%"
-          height="300px"
-          data={dataGrafica}
-          options={{
-            chart: {
-              title: "Reporte de votos para presidente",
-              subtitle: "Votos del año 2023",
-            }
-          }}
-        /></center>
+        <center>
+          <Pie data={datapie} />
+
+        </center>
       </div>
       <br /><br />
       <div id="VotosSedes">
         <br />
         <h3>Grafico de barras que muestre las 5 sedes con mayores votos almacenados en Redis</h3>
         <center>
-          <Chart
-            chartType="Bar"
-            width="80%"
-            height="500px"
-            colors="#ffffff"
-            data={dataGrafica}
-            options={options}
-          />
+          <Bar data={dataR4} options={optionReporte4} />
         </center>
 
       </div>
       <br /><br />
       <div id="UltimosVotos">
         <h3>Ultimos 5 votos almacenados en Redis</h3>
-        <ListGroup>
-          <ListGroup.Item action variant="light">
-            <ListGroup horizontal={'xxl'} className="mx-5">
-              <ListGroup.Item>This</ListGroup.Item>
-              <ListGroup.Item>ListGroup</ListGroup.Item>
-              <ListGroup.Item>renders</ListGroup.Item>
-              <ListGroup.Item>horizontally!</ListGroup.Item>
-            </ListGroup></ListGroup.Item>
-          <ListGroup.Item action variant="light">Dapibus ac facilisis in</ListGroup.Item>
-          <ListGroup.Item action variant="light">Morbi leo risus</ListGroup.Item>
-          <ListGroup.Item action variant="light">Porta ac consectetur ac</ListGroup.Item>
-          <ListGroup.Item action variant="light">Porta ac consectetur ac</ListGroup.Item>
-        </ListGroup>
+        <Table striped bordered hover variant="dark">
+          <thead>
+            <tr>
+              <th>Sede</th>
+              <th>Departamento</th>
+              <th>Municipio</th>
+              <th>Papeleta</th>
+              <th>Partido</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              dataGraficaR5.map((elemento, key) => {
+                return (
+                  <tr key={key}>
+                      <td>{elemento.sede}</td>
+                      <td>{elemento.departamento}</td>
+                      <td>{elemento.municipio}</td>
+                      <td>{elemento.paleta}</td>
+                      <td>{elemento.partido}</td>
+                    </tr>
+                )
+              })
+            }
+          </tbody>
+    </Table>
 
       </div>
       <br /><br />
