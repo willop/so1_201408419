@@ -1,0 +1,10 @@
+//acceder a la base de datos MySQL
+
+kubectl exec -it mysql-6bcc9975d7-9tjkb -- /bin/bash
+mysql -u root -proot
+CREATE USER 'Sopes1P'@'%' IDENTIFIED WITH mysql_native_password BY 'Sopes1P';
+GRANT ALL PRIVILEGES ON *.* TO 'Sopes1P'@'%';
+FLUSH PRIVILEGES;
+
+
+//

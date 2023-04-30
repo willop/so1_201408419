@@ -82,3 +82,11 @@ sudo docker build -t willop/pf_grpc_client_201408419:latest .
 sudo docker build -t willop/pf_grpc_server_201408419:latest .
 sudo docker build -t willop/pf_redis_sub_201408419:latest .
 sudo docker build -t willop/pf_redis_pub_201408419:latest .
+
+//--------------------------------- DOCKER PUSH ---------------------
+sudo docker push willop/pf_frontend_201408419:latest
+sudo docker push willop/pf_api_201408419:latest
+sudo docker push willop/pf_grpc_client_201408419:latest
+sudo docker push willop/pf_grpc_server_201408419:latest
+sudo docker push willop/pf_redis_sub_201408419:latest
+sudo docker push willop/pf_redis_pub_201408419:latest
