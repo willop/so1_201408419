@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-pub
+  namespace: pf-sopes1
+spec:
+  selector:
+    matchLabels:
+      app: redis-pub
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redis-pub
+    spec:
+      containers:
+      - name: redis-pub
+        image: willop/pf_redis_pub_201408419
+        env:
+        - name: host
+          value: redis-service
+        - name: port
+          value: '6379'
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8000
+          name: redis-pub
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv-redispub
+  namespace: pf-sopes1
+spec:
+  selector:
+    app: redis-pub
+  type: LoadBalancer
+  ports:
+  - port: 8000

@@ -1,10 +1,17 @@
 //acceder a la base de datos MySQL
 
-kubectl exec -it mysql-6bcc9975d7-9tjkb -- /bin/bash
+kubectl exec -it mysql-f589cb766-2lcss -n pf-sopes1 -- /bin/bash
 mysql -u root -proot
 CREATE USER 'Sopes1P'@'%' IDENTIFIED WITH mysql_native_password BY 'Sopes1P';
 GRANT ALL PRIVILEGES ON *.* TO 'Sopes1P'@'%';
 FLUSH PRIVILEGES;
 
+create database proyecto1;
+use proyecto1;
+create table temporal(id bigint unsigned auto_increment primary key,Sede int not null,Departamento varchar(100) not null,Municipio varchar(100) not null,Paleta varchar(20) not null,Partido varchar(20) not null,Fuente varchar(30) not null);
+truncate temporal ;
+drop table temporal;
 
-//
+//redis
+kubectl exec -it redis-5647f8cc7d-6jhx7 -n pf-sopes1 -- redis-cli
+

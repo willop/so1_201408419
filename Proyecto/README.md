@@ -1,3 +1,27 @@
+# Wilfred Stewart Perez Solorzano
+# 201408419
+# Proyecto 2 
+
+
+## Descripcion
+---
+Se debe crear un sistema distribuido que muestre estadísticas en tiempo real mediante Kubernetes y tecnologías en la nube. También se debe proporcionar un despliegue blue/green, es decir, una división de tráfico de entrada. Este proyecto será aplicado para llevar el control sobre el porcentaje de votos emitidos en las elecciones.
+
+
+## Ejemplo de archivo:
+[
+    {
+        "sede": 1,
+        "municipio": "Guatemala",
+        "departamento": "Guatemala",
+        "papeleta": "Blanca",
+        "partido": "FCN"
+    },
+…
+]
+
+## comandos a utilizar
+
 //-------------- FRONTEND --------------
 npm install react-bootstrap bootstrap
 npm install --save react-google-charts

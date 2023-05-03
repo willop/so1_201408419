@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpc-client
+  namespace: pf-sopes1
+spec:
+  selector:
+    matchLabels:
+      app: grpc-client
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: grpc-client
+    spec:
+      containers:
+      - name: grpc-client
+        image: willop/pf_grpc_client_201408419
+        env:
+        - name: DB_HOST
+          value: mysql
+        - name: DB_USER
+          value: "Sopes1P"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_PASSWORD
+          value: "Sopes1P"
+        - name: DB_DATABASE
+          value: "proyecto1"     
+        - name: SERVER_HOST
+          value: srv-grpc-server 
+        - name: CLIENT_HOST
+          value: srv-grpc-server    
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 4000
+          name: grpc-client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv-grpc-client
+  namespace: pf-sopes1
+spec:
+  selector:
+    app: grpc-client
+  type: LoadBalancer
+  ports:
+  - port: 4000

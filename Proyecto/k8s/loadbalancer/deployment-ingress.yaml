@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  namespace: pf-sopes1
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /client
+        pathType: Prefix
+        backend:
+          service:
+            name: srv-grpc-client
+            port:
+              number: 4000
+      - path: /pub
+        pathType: Prefix
+        backend:
+          service:
+            name: srv-redispub
+            port:
+              number: 8000

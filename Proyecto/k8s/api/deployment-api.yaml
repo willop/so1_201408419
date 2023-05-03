@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: pf-sopes1
+spec:
+  selector:
+    matchLabels:
+      app: api
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: willop/pf_api_201408419
+        env:
+        - name: DB_HOST
+          value: mysql
+        - name: DB_USER
+          value: "Sopes1P"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_PASSWORD
+          value: "Sopes1P"
+        - name: DB_DATABASE
+          value: "proyecto1"     
+        - name: DB_HOST_REDIS
+          value: redis-service
+        - name: PORT
+          value: "5000"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000
+          name: api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv-api
+  namespace: pf-sopes1
+spec:
+  selector:
+    app: api
+  type: LoadBalancer
+  ports:
+  - port: 5000

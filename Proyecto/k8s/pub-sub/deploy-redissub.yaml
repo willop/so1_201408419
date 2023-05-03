@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-sub
+  namespace: pf-sopes1
+spec:
+  selector:
+    matchLabels:
+      app: redis-sub
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redis-sub
+    spec:
+      containers:
+      - name: redis-sub
+        image: willop/pf_redis_sub_201408419
+        env:
+        - name: user
+          value: "Sopes1P"
+        - name: pass
+          value: "Sopes1P"
+        - name: host_mysql
+          value: mysql
+        - name: port_mysql
+          value: '3306'
+        - name: db_name
+          value: "proyecto1"
+        - name: host
+          value: redis-service
+        - name: port
+          value: "6379"         
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8001
+          name: redis-sub
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv-redis-sub
+  namespace: pf-sopes1
+spec:
+  selector:
+    app: redis-sub
+  type: ClusterIP
+  ports:
+  - port: 8001

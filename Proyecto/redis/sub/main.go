@@ -22,8 +22,8 @@ func getDB() *sql.DB {
 		ConnectionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 			os.Getenv("user"),
 			os.Getenv("pass"),
-			os.Getenv("host"),
-			os.Getenv("port"),
+			os.Getenv("host_mysql"),
+			os.Getenv("port_mysql"),
 			os.Getenv("db_name"))
 	)
 	db, err := sql.Open("mysql", ConnectionString)
@@ -44,7 +44,7 @@ type User struct {
 var ctx = context.Background()
 
 var redisClient = redis.NewClient(&redis.Options{
-	Addr: "localhost:6379",
+	Addr: os.Getenv("host") + ":" + os.Getenv("port"),
 })
 
 func main() {

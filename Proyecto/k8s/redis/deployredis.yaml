@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-deployment
+  name: redis
   namespace: pf-sopes1
   labels:
     app: redis
@@ -21,3 +21,19 @@ spec:
         ports:
         - containerPort: 6379
           name: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: pf-sopes1
+  labels:
+    app: redis
+spec:
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+  type: ClusterIP

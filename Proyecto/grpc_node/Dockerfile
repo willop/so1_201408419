@@ -1,12 +1,12 @@
 #Esta imagen 
 
-FROM node:alpine
+FROM node:12.22.9
 
 WORKDIR /var/www
 
 COPY package.json .
 
-RUN npm install -g npm@9.6.5
+RUN npm install
 
 COPY . .
 
